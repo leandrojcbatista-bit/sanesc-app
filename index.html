@@ -295,7 +295,7 @@ body{font-family:'IBM Plex Sans',sans-serif;background:#fff;color:var(--text-pri
 
 </div>
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxw9ngkwrGjtDrJ0CD7oFild12ZRRPxDkgL5m8OYvxg5G1SfFfd_JBER3j553ZyLFHLTQ/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxBCM7QvY8AARLsbCIjETmtrwHggzujeBJivECMDILFTgvjv3SvEFgPgplCQtojtFspDg/exec";
 const geoData = {lat:"", lng:""};
 const fotosAdicionadas = {};
 const ocorrenciasLista = [];
@@ -384,7 +384,15 @@ function carregarFoto(idx, label, input) {
     const slot = document.getElementById("photo-grid").children[idx];
     slot.innerHTML = '<img src="'+e.target.result+'" style="width:100%;height:100%;object-fit:cover;"/><div class="geo-badge">'+(geoData.lat||"--")+","+(geoData.lng||"--")+"</div>";
     slot.classList.add("filled");
-    fotosAdicionadas[idx] = {label, lat:geoData.lat, lng:geoData.lng};
+    // Guardar base64, tipo e label para envio ao Drive
+    fotosAdicionadas[idx] = {
+      label: label,
+      lat: geoData.lat,
+      lng: geoData.lng,
+      base64: e.target.result.split(",")[1],
+      mimeType: file.type,
+      nome: label.replace(/\s+/g,"-") + "-" + Date.now() + ".jpg"
+    };
     document.getElementById("fotos-status").textContent = Object.keys(fotosAdicionadas).length + " foto(s) tirada(s) com localização";
   };
   reader.readAsDataURL(file);
@@ -457,12 +465,30 @@ function enviarParaSheets() {
     volTotalMedido:  totalLucio
   });
 
-  fetch(SCRIPT_URL + "?" + params.toString())
+  // Montar payload com fotos em base64
+  const fotosArray = Object.values(fotosAdicionadas).map(f => ({
+    label: f.label,
+    base64: f.base64,
+    mimeType: f.mimeType || "image/jpeg",
+    nome: f.nome,
+    lat: f.lat,
+    lng: f.lng
+  }));
+
+  // Enviar dados + fotos via POST (JSON)
+  fetch(SCRIPT_URL, {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      params: Object.fromEntries(params),
+      fotos: fotosArray
+    })
+  })
     .then(r => r.text())
     .then(resp => {
       if (resp.trim() === "OK") {
         status.className = "send-status success";
-        status.innerHTML = "✅ Registro salvo na planilha!";
+        status.innerHTML = "✅ Registro e fotos salvos!";
         setTimeout(() => resetarApp(), 2500);
       } else {
         status.className = "send-status error";
