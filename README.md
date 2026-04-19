@@ -1,4 +1,4 @@
-[index .html](https://github.com/user-attachments/files/26866957/index.html)
+[index.html](https://github.com/user-attachments/files/26867194/index.html)
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -466,22 +466,14 @@ function enviarParaSheets() {
     volTotalMedido:  totalLucio
   });
 
-  // Montar payload com fotos em base64
-  const fotosArray = Object.values(fotosAdicionadas).map(f => ({
-    label: f.label,
-    base64: f.base64,
-    mimeType: f.mimeType || "image/jpeg",
-    nome: f.nome,
-    lat: f.lat,
-    lng: f.lng
-  }));
+  const qtdFotos = Object.keys(fotosAdicionadas).length;
 
-  // Enviar dados via GET (mais confiável com Apps Script)
+  // Enviar dados via GET
   const url = SCRIPT_URL + "?" + params.toString();
   fetch(url, {method: "GET", mode: "no-cors"})
     .then(() => {
       status.className = "send-status success";
-      status.innerHTML = "✅ Registro salvo na planilha!<br><span style=\"font-size:12px;font-weight:400;\">Fotos: " + fotosArray.length + " foto(s) registrada(s)</span>";
+      status.innerHTML = "✅ Registro salvo na planilha!" + (qtdFotos > 0 ? "<br><span style=\"font-size:12px;font-weight:400;\">" + qtdFotos + " foto(s) registrada(s)</span>" : "");
       setTimeout(() => resetarApp(), 2500);
       btn.disabled = false;
     })
