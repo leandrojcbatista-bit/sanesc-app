@@ -85,6 +85,15 @@ body{font-family:'IBM Plex Sans',sans-serif;background:var(--gray-bg);color:var(
 .problema-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
 .problema-btn{padding:12px;border:2px solid var(--gray-border);border-radius:var(--radius-sm);text-align:center;cursor:pointer;font-size:12px;font-weight:600;background:white;transition:all .18s;}
 .problema-btn.selected{border-color:var(--orange);background:var(--orange-light);color:var(--orange);}
+.toggle-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
+.toggle-pair{display:flex;flex-direction:column;gap:6px;}
+.toggle-pair-label{font-size:11px;font-weight:600;color:var(--gray-text);text-transform:uppercase;letter-spacing:.05em;}
+.toggle-pair-btns{display:flex;gap:6px;}
+.toggle-opt{flex:1;padding:10px 4px;border:2px solid var(--gray-border);border-radius:var(--radius-sm);text-align:center;cursor:pointer;font-size:12px;font-weight:600;background:white;transition:all .18s;}
+.toggle-opt.sim{border-color:var(--green);background:var(--green-light);color:var(--green);}
+.toggle-opt.nao{border-color:var(--red);background:var(--red-light);color:var(--red);}
+.toggle-opt.aberto{border-color:var(--green);background:var(--green-light);color:var(--green);}
+.toggle-opt.fechado{border-color:var(--blue-main);background:var(--blue-light);color:var(--blue-main);}
 </style>
 </head>
 <body>
@@ -127,28 +136,56 @@ body{font-family:'IBM Plex Sans',sans-serif;background:var(--gray-bg);color:var(
   <div class="card">
     <div class="card-title">Dados operacionais</div>
     <div class="row2">
-      <div class="field-group" style="margin:0 0 10px;"><label>Vazão entrada (L/s)</label><input type="number" id="eta-vazao-entrada" placeholder="Ex: 50"/></div>
-      <div class="field-group" style="margin:0 0 10px;"><label>Vazão saída (L/s)</label><input type="number" id="eta-vazao-saida" placeholder="Ex: 48"/></div>
-    </div>
-    <div class="row2">
-      <div class="field-group" style="margin:0 0 10px;"><label>Cloro (mg/L)</label><input type="number" step="0.1" id="eta-cloro" placeholder="Ex: 1.5"/></div>
-      <div class="field-group" style="margin:0 0 10px;"><label>Flúor (mg/L)</label><input type="number" step="0.1" id="eta-fluor" placeholder="Ex: 0.7"/></div>
-    </div>
-    <div class="row2">
-      <div class="field-group" style="margin:0 0 10px;"><label>pH</label><input type="number" step="0.1" id="eta-ph" placeholder="Ex: 7.2"/></div>
-      <div class="field-group" style="margin:0 0 10px;"><label>Turbidez (NTU)</label><input type="number" step="0.1" id="eta-turbidez" placeholder="Ex: 0.5"/></div>
-    </div>
-    <div class="field-group" style="margin:0;"><label>Situação</label>
-      <select id="eta-situacao">
-        <option value="">Selecione...</option>
-        <option>Operando normalmente</option>
-        <option>Operando com restrição</option>
-        <option>Parada para manutenção</option>
-        <option>Parada por emergência</option>
-      </select>
+      <div class="field-group" style="margin:0;"><label>Vazão entrada (L/s)</label><input type="number" id="eta-vazao-entrada" placeholder="Ex: 50"/></div>
+      <div class="field-group" style="margin:0;"><label>Turbidez (NTU)</label><input type="number" step="0.1" id="eta-turbidez" placeholder="Ex: 0.5"/></div>
     </div>
   </div>
   <div class="field-group"><label>Observações</label><textarea id="eta-obs" placeholder="Observações gerais..."></textarea></div>
+
+  <div class="card">
+    <div class="card-title">Registros operacionais</div>
+
+    <div class="toggle-pair" style="margin-bottom:12px;">
+      <div class="toggle-pair-label">Registro São Francisco</div>
+      <div class="toggle-pair-btns">
+        <div class="toggle-opt" id="sf-aberto" onclick="setToggle('sf','aberto')">🔓 Aberto</div>
+        <div class="toggle-opt" id="sf-fechado" onclick="setToggle('sf','fechado')">🔒 Fechado</div>
+      </div>
+    </div>
+
+    <div class="toggle-pair" style="margin-bottom:12px;">
+      <div class="toggle-pair-label">Lavagem de Filtro</div>
+      <div class="toggle-pair-btns">
+        <div class="toggle-opt" id="filtro-sim" onclick="setToggle('filtro','sim')">✅ Sim</div>
+        <div class="toggle-opt" id="filtro-nao" onclick="setToggle('filtro','nao')">❌ Não</div>
+      </div>
+    </div>
+
+    <div class="toggle-pair" style="margin-bottom:12px;">
+      <div class="toggle-pair-label">Limpeza de Crivo</div>
+      <div class="toggle-pair-btns">
+        <div class="toggle-opt" id="crivo-sim" onclick="setToggle('crivo','sim')">✅ Sim</div>
+        <div class="toggle-opt" id="crivo-nao" onclick="setToggle('crivo','nao')">❌ Não</div>
+      </div>
+    </div>
+
+    <div class="toggle-pair" style="margin-bottom:12px;">
+      <div class="toggle-pair-label">Parada de Energia</div>
+      <div class="toggle-pair-btns">
+        <div class="toggle-opt" id="energia-sim" onclick="setToggle('energia','sim')">✅ Sim</div>
+        <div class="toggle-opt" id="energia-nao" onclick="setToggle('energia','nao')">❌ Não</div>
+      </div>
+    </div>
+
+    <div class="toggle-pair">
+      <div class="toggle-pair-label">Entrada do Gerador</div>
+      <div class="toggle-pair-btns">
+        <div class="toggle-opt" id="gerador-sim" onclick="setToggle('gerador','sim')">✅ Sim</div>
+        <div class="toggle-opt" id="gerador-nao" onclick="setToggle('gerador','nao')">❌ Não</div>
+      </div>
+    </div>
+  </div>
+
   <button class="btn btn-success" id="btn-salvar-eta" onclick="enviar('eta')">☁️ Salvar ETA no Google Sheets</button>
   <div class="send-status" id="send-status-eta"></div>
 </div>
@@ -164,151 +201,151 @@ body{font-family:'IBM Plex Sans',sans-serif;background:var(--gray-bg);color:var(
     <select id="cr-localidade" onchange="preencherCR()">
       <option value="">Selecione o CR...</option>
         <optgroup label="CR Lúcio Rosa">
-          <option value="Lúcio Rosa - Semi Enterrado|Semi Enterrado|1200">Lúcio Rosa - Semi Enterrado (1.200 m³)</option>
-          <option value="Lúcio Rosa - Elevado|Elevado|80">Lúcio Rosa - Elevado (80 m³)</option>
-          <option value="Lúcio Rosa - Apoiado 1|Apoiado|1000">Lúcio Rosa - Apoiado 1 (1.000 m³)</option>
-          <option value="Lúcio Rosa - Apoiado 2|Apoiado|1000">Lúcio Rosa - Apoiado 2 (1.000 m³)</option>
-          <option value="Lúcio Rosa - Apoiado 3|Apoiado|1000">Lúcio Rosa - Apoiado 3 (1.000 m³)</option>
-          <option value="Lúcio Rosa - Apoiado 4|Apoiado|1000">Lúcio Rosa - Apoiado 4 (1.000 m³)</option>
-          <option value="Lúcio Rosa - Apoiado 5|Apoiado|1000">Lúcio Rosa - Apoiado 5 (1.000 m³)</option>
+          <option value="Lúcio Rosa - Semi Enterrado|Semi Enterrado|1200">Lúcio Rosa - Semi Enterrado</option>
+          <option value="Lúcio Rosa - Elevado|Elevado|80">Lúcio Rosa - Elevado</option>
+          <option value="Lúcio Rosa - Apoiado 1|Apoiado|1000">Lúcio Rosa - Apoiado 1</option>
+          <option value="Lúcio Rosa - Apoiado 2|Apoiado|1000">Lúcio Rosa - Apoiado 2</option>
+          <option value="Lúcio Rosa - Apoiado 3|Apoiado|1000">Lúcio Rosa - Apoiado 3</option>
+          <option value="Lúcio Rosa - Apoiado 4|Apoiado|1000">Lúcio Rosa - Apoiado 4</option>
+          <option value="Lúcio Rosa - Apoiado 5|Apoiado|1000">Lúcio Rosa - Apoiado 5</option>
         </optgroup>
         <optgroup label="CR Morada do Morro">
-          <option value="Morada do Morro - Apoiado Tubular|Apoiado (Tubular)|300">Morada do Morro - Apoiado Tubular (300 m³)</option>
-          <option value="Morada do Morro - Apoiado 1|Apoiado|500">Morada do Morro - Apoiado 1 (500 m³)</option>
-          <option value="Morada do Morro - Apoiado 2|Apoiado|1500">Morada do Morro - Apoiado 2 (1.500 m³)</option>
-          <option value="Morada do Morro - Apoiado 3|Apoiado|200">Morada do Morro - Apoiado 3 (200 m³)</option>
+          <option value="Morada do Morro - Apoiado Tubular|Apoiado (Tubular)|300">Morada do Morro - Apoiado Tubular</option>
+          <option value="Morada do Morro - Apoiado 1|Apoiado|500">Morada do Morro - Apoiado 1</option>
+          <option value="Morada do Morro - Apoiado 2|Apoiado|1500">Morada do Morro - Apoiado 2</option>
+          <option value="Morada do Morro - Apoiado 3|Apoiado|200">Morada do Morro - Apoiado 3</option>
         </optgroup>
         <optgroup label="CR Morada do Bosque">
-          <option value="Morada do Bosque - Elevado|Elevado|50">Morada do Bosque - Elevado (50 m³)</option>
-          <option value="Morada do Bosque - Apoiado|Apoiado|300">Morada do Bosque - Apoiado (300 m³)</option>
+          <option value="Morada do Bosque - Elevado|Elevado|50">Morada do Bosque - Elevado</option>
+          <option value="Morada do Bosque - Apoiado|Apoiado|300">Morada do Bosque - Apoiado</option>
         </optgroup>
         <optgroup label="CR Top do Parque">
-          <option value="Top do Parque - Elevado|Elevado|50">Top do Parque - Elevado (50 m³)</option>
-          <option value="Top do Parque - Apoiado|Apoiado|500">Top do Parque - Apoiado (500 m³)</option>
+          <option value="Top do Parque - Elevado|Elevado|50">Top do Parque - Elevado</option>
+          <option value="Top do Parque - Apoiado|Apoiado|500">Top do Parque - Apoiado</option>
         </optgroup>
         <optgroup label="CR Polo Agroindustrial">
-          <option value="Polo Agroindustrial - Elevado|Elevado|50">Polo Agroindustrial - Elevado (50 m³)</option>
-          <option value="Polo Agroindustrial - Apoiado|Apoiado|1000">Polo Agroindustrial - Apoiado (1.000 m³)</option>
+          <option value="Polo Agroindustrial - Elevado|Elevado|50">Polo Agroindustrial - Elevado</option>
+          <option value="Polo Agroindustrial - Apoiado|Apoiado|1000">Polo Agroindustrial - Apoiado</option>
         </optgroup>
         <optgroup label="CR Valéria">
-          <option value="Valéria - Apoiado 1|Apoiado|500">Valéria - Apoiado 1 (500 m³)</option>
-          <option value="Valéria - Apoiado 2|Apoiado|500">Valéria - Apoiado 2 (500 m³)</option>
+          <option value="Valéria - Apoiado 1|Apoiado|500">Valéria - Apoiado 1</option>
+          <option value="Valéria - Apoiado 2|Apoiado|500">Valéria - Apoiado 2</option>
         </optgroup>
         <optgroup label="CR Galvão">
-          <option value="Galvão - Apoiado|Apoiado|500">Galvão - Apoiado (500 m³)</option>
+          <option value="Galvão - Apoiado|Apoiado|500">Galvão - Apoiado</option>
         </optgroup>
         <optgroup label="CR Capri">
-          <option value="Capri - Apoiado 1|Apoiado|1000">Capri - Apoiado 1 (1.000 m³)</option>
-          <option value="Capri - Apoiado 2|Apoiado|1000">Capri - Apoiado 2 (1.000 m³)</option>
+          <option value="Capri - Apoiado 1|Apoiado|1000">Capri - Apoiado 1</option>
+          <option value="Capri - Apoiado 2|Apoiado|1000">Capri - Apoiado 2</option>
         </optgroup>
         <optgroup label="CR Solar Itália">
-          <option value="Solar Itália - Apoiado|Apoiado|500">Solar Itália - Apoiado (500 m³)</option>
+          <option value="Solar Itália - Apoiado|Apoiado|500">Solar Itália - Apoiado</option>
         </optgroup>
         <optgroup label="CR Jardim Ingá">
-          <option value="Jardim Ingá - Apoiado Tubular|Apoiado (Tubular)|100">Jardim Ingá - Apoiado Tubular (100 m³)</option>
+          <option value="Jardim Ingá - Apoiado Tubular|Apoiado (Tubular)|100">Jardim Ingá - Apoiado Tubular</option>
         </optgroup>
         <optgroup label="CR Vale Verde">
-          <option value="Vale Verde - Apoiado Tubular|Apoiado (Tubular)|100">Vale Verde - Apoiado Tubular (100 m³)</option>
+          <option value="Vale Verde - Apoiado Tubular|Apoiado (Tubular)|100">Vale Verde - Apoiado Tubular</option>
         </optgroup>
         <optgroup label="CR 10 Milhões">
-          <option value="10 Milhões - Elevado 1|Elevado|50">10 Milhões - Elevado 1 (50 m³)</option>
-          <option value="10 Milhões - Elevado 2|Elevado|50">10 Milhões - Elevado 2 (50 m³)</option>
-          <option value="10 Milhões - Apoiado 1|Apoiado|12000">10 Milhões - Apoiado 1 (12.000 m³)</option>
-          <option value="10 Milhões - Apoiado 2|Apoiado|1500">10 Milhões - Apoiado 2 (1.500 m³)</option>
-          <option value="10 Milhões - Apoiado 3|Apoiado|3500">10 Milhões - Apoiado 3 (3.500 m³)</option>
+          <option value="10 Milhões - Elevado 1|Elevado|50">10 Milhões - Elevado 1</option>
+          <option value="10 Milhões - Elevado 2|Elevado|50">10 Milhões - Elevado 2</option>
+          <option value="10 Milhões - Apoiado 1|Apoiado|12000">10 Milhões - Apoiado 1</option>
+          <option value="10 Milhões - Apoiado 2|Apoiado|1500">10 Milhões - Apoiado 2</option>
+          <option value="10 Milhões - Apoiado 3|Apoiado|3500">10 Milhões - Apoiado 3</option>
         </optgroup>
         <optgroup label="CR Boa Esperança">
-          <option value="Boa Esperança - Elevado|Elevado|50">Boa Esperança - Elevado (50 m³)</option>
-          <option value="Boa Esperança - Apoiado Tubular|Apoiado (Tubular)|100">Boa Esperança - Apoiado Tubular (100 m³)</option>
-          <option value="Boa Esperança - Apoiado|Apoiado|200">Boa Esperança - Apoiado (200 m³)</option>
+          <option value="Boa Esperança - Elevado|Elevado|50">Boa Esperança - Elevado</option>
+          <option value="Boa Esperança - Apoiado Tubular|Apoiado (Tubular)|100">Boa Esperança - Apoiado Tubular</option>
+          <option value="Boa Esperança - Apoiado|Apoiado|200">Boa Esperança - Apoiado</option>
         </optgroup>
         <optgroup label="CR Paraíso I">
-          <option value="Paraíso I - Apoiado Tubular|Apoiado (Tubular)|200">Paraíso I - Apoiado Tubular (200 m³)</option>
+          <option value="Paraíso I - Apoiado Tubular|Apoiado (Tubular)|200">Paraíso I - Apoiado Tubular</option>
         </optgroup>
         <optgroup label="CR Paraíso II">
-          <option value="Paraíso II - Apoiado Tubular|Apoiado (Tubular)|200">Paraíso II - Apoiado Tubular (200 m³)</option>
+          <option value="Paraíso II - Apoiado Tubular|Apoiado (Tubular)|200">Paraíso II - Apoiado Tubular</option>
         </optgroup>
         <optgroup label="CR Flor do Ipê">
-          <option value="Flor do Ipê - Apoiado|Apoiado|500">Flor do Ipê - Apoiado (500 m³)</option>
+          <option value="Flor do Ipê - Apoiado|Apoiado|500">Flor do Ipê - Apoiado</option>
         </optgroup>
         <optgroup label="CR FGR">
-          <option value="FGR - Elevado 1|Elevado|40">FGR - Elevado 1 (40 m³)</option>
-          <option value="FGR - Elevado 2|Elevado|50">FGR - Elevado 2 (50 m³)</option>
-          <option value="FGR - Apoiado 1|Apoiado|1500">FGR - Apoiado 1 (1.500 m³)</option>
-          <option value="FGR - Apoiado 2|Apoiado|1500">FGR - Apoiado 2 (1.500 m³)</option>
+          <option value="FGR - Elevado 1|Elevado|40">FGR - Elevado 1</option>
+          <option value="FGR - Elevado 2|Elevado|50">FGR - Elevado 2</option>
+          <option value="FGR - Apoiado 1|Apoiado|1500">FGR - Apoiado 1</option>
+          <option value="FGR - Apoiado 2|Apoiado|1500">FGR - Apoiado 2</option>
         </optgroup>
         <optgroup label="CR São Francisco">
-          <option value="São Francisco - Elevado|Elevado|500">São Francisco - Elevado (500 m³)</option>
-          <option value="São Francisco - Apoiado 1|Apoiado|1100">São Francisco - Apoiado 1 (1.100 m³)</option>
-          <option value="São Francisco - Apoiado 2|Apoiado|1100">São Francisco - Apoiado 2 (1.100 m³)</option>
-          <option value="São Francisco - Apoiado 3|Apoiado|1100">São Francisco - Apoiado 3 (1.100 m³)</option>
+          <option value="São Francisco - Elevado|Elevado|500">São Francisco - Elevado</option>
+          <option value="São Francisco - Apoiado 1|Apoiado|1100">São Francisco - Apoiado 1</option>
+          <option value="São Francisco - Apoiado 2|Apoiado|1100">São Francisco - Apoiado 2</option>
+          <option value="São Francisco - Apoiado 3|Apoiado|1100">São Francisco - Apoiado 3</option>
         </optgroup>
         <optgroup label="CR Porto Real">
-          <option value="Porto Real - Apoiado|Apoiado|800">Porto Real - Apoiado (800 m³)</option>
+          <option value="Porto Real - Apoiado|Apoiado|800">Porto Real - Apoiado</option>
         </optgroup>
         <optgroup label="CR Trajano">
-          <option value="Trajano - Apoiado 1|Apoiado|1500">Trajano - Apoiado 1 (1.500 m³)</option>
-          <option value="Trajano - Apoiado 2|Apoiado|1500">Trajano - Apoiado 2 (1.500 m³)</option>
+          <option value="Trajano - Apoiado 1|Apoiado|1500">Trajano - Apoiado 1</option>
+          <option value="Trajano - Apoiado 2|Apoiado|1500">Trajano - Apoiado 2</option>
         </optgroup>
         <optgroup label="CR Cidade Alpha">
-          <option value="Cidade Alpha - Apoiado Tubular|Apoiado (Tubular)|1000">Cidade Alpha - Apoiado Tubular (1.000 m³)</option>
+          <option value="Cidade Alpha - Apoiado Tubular|Apoiado (Tubular)|1000">Cidade Alpha - Apoiado Tubular</option>
         </optgroup>
         <optgroup label="CR GO-020 Solaris">
-          <option value="GO-020 Solaris - Apoiado|Apoiado|3000">GO-020 Solaris - Apoiado (3.000 m³)</option>
+          <option value="GO-020 Solaris - Apoiado|Apoiado|3000">GO-020 Solaris - Apoiado</option>
         </optgroup>
         <optgroup label="CR Morumbi">
-          <option value="Morumbi - Apoiado Tubular|Apoiado (Tubular)|150">Morumbi - Apoiado Tubular (150 m³)</option>
-          <option value="Morumbi - Apoiado 1|Apoiado|2000">Morumbi - Apoiado 1 (2.000 m³)</option>
-          <option value="Morumbi - Apoiado 2|Apoiado|2000">Morumbi - Apoiado 2 (2.000 m³)</option>
+          <option value="Morumbi - Apoiado Tubular|Apoiado (Tubular)|150">Morumbi - Apoiado Tubular</option>
+          <option value="Morumbi - Apoiado 1|Apoiado|2000">Morumbi - Apoiado 1</option>
+          <option value="Morumbi - Apoiado 2|Apoiado|2000">Morumbi - Apoiado 2</option>
         </optgroup>
         <optgroup label="CR Ravena">
-          <option value="Ravena - Apoiado|Apoiado|750">Ravena - Apoiado (750 m³)</option>
+          <option value="Ravena - Apoiado|Apoiado|750">Ravena - Apoiado</option>
         </optgroup>
         <optgroup label="CR Laranjeiras">
-          <option value="Laranjeiras - Apoiado Tubular|Apoiado (Tubular)|100">Laranjeiras - Apoiado Tubular (100 m³)</option>
+          <option value="Laranjeiras - Apoiado Tubular|Apoiado (Tubular)|100">Laranjeiras - Apoiado Tubular</option>
         </optgroup>
         <optgroup label="CR Aurora das Mansões">
-          <option value="Aurora das Mansões - Elevado|Elevado|50">Aurora das Mansões - Elevado (50 m³)</option>
+          <option value="Aurora das Mansões - Elevado|Elevado|50">Aurora das Mansões - Elevado</option>
         </optgroup>
         <optgroup label="CR Jd. Das Oliveiras">
-          <option value="Jd. Das Oliveiras - Elevado|Elevado|150">Jd. Das Oliveiras - Elevado (150 m³)</option>
-          <option value="Jd. Das Oliveiras - Apoiado 1|Apoiado|500">Jd. Das Oliveiras - Apoiado 1 (500 m³)</option>
-          <option value="Jd. Das Oliveiras - Apoiado 2|Apoiado|200">Jd. Das Oliveiras - Apoiado 2 (200 m³)</option>
-          <option value="Jd. Das Oliveiras - Apoiado 3|Apoiado|1000">Jd. Das Oliveiras - Apoiado 3 (1.000 m³)</option>
+          <option value="Jd. Das Oliveiras - Elevado|Elevado|150">Jd. Das Oliveiras - Elevado</option>
+          <option value="Jd. Das Oliveiras - Apoiado 1|Apoiado|500">Jd. Das Oliveiras - Apoiado 1</option>
+          <option value="Jd. Das Oliveiras - Apoiado 2|Apoiado|200">Jd. Das Oliveiras - Apoiado 2</option>
+          <option value="Jd. Das Oliveiras - Apoiado 3|Apoiado|1000">Jd. Das Oliveiras - Apoiado 3</option>
         </optgroup>
         <optgroup label="CR Matinha">
-          <option value="Matinha - Apoiado 1|Apoiado|500">Matinha - Apoiado 1 (500 m³)</option>
-          <option value="Matinha - Apoiado 2|Apoiado|1000">Matinha - Apoiado 2 (1.000 m³)</option>
-          <option value="Matinha - Elevado 1|Elevado|30">Matinha - Elevado 1 (30 m³)</option>
-          <option value="Matinha - Elevado 2|Elevado|40">Matinha - Elevado 2 (40 m³)</option>
+          <option value="Matinha - Apoiado 1|Apoiado|500">Matinha - Apoiado 1</option>
+          <option value="Matinha - Apoiado 2|Apoiado|1000">Matinha - Apoiado 2</option>
+          <option value="Matinha - Elevado 1|Elevado|30">Matinha - Elevado 1</option>
+          <option value="Matinha - Elevado 2|Elevado|40">Matinha - Elevado 2</option>
         </optgroup>
         <optgroup label="CR Batata">
-          <option value="Batata - Elevado|Elevado|50">Batata - Elevado (50 m³)</option>
+          <option value="Batata - Elevado|Elevado|50">Batata - Elevado</option>
         </optgroup>
         <optgroup label="CR Ecológico Araguaia">
-          <option value="Ecológico Araguaia - Elevado|Elevado|50">Ecológico Araguaia - Elevado (50 m³)</option>
-          <option value="Ecológico Araguaia - Apoiado|Apoiado|500">Ecológico Araguaia - Apoiado (500 m³)</option>
+          <option value="Ecológico Araguaia - Elevado|Elevado|50">Ecológico Araguaia - Elevado</option>
+          <option value="Ecológico Araguaia - Apoiado|Apoiado|500">Ecológico Araguaia - Apoiado</option>
         </optgroup>
         <optgroup label="CR Residencial Buritis">
-          <option value="Residencial Buritis - Elevado|Elevado|50">Residencial Buritis - Elevado (50 m³)</option>
-          <option value="Residencial Buritis - Apoiado|Apoiado|500">Residencial Buritis - Apoiado (500 m³)</option>
+          <option value="Residencial Buritis - Elevado|Elevado|50">Residencial Buritis - Elevado</option>
+          <option value="Residencial Buritis - Apoiado|Apoiado|500">Residencial Buritis - Apoiado</option>
         </optgroup>
         <optgroup label="CR Villa Verde">
-          <option value="Villa Verde - Apoiado|Apoiado|100">Villa Verde - Apoiado (100 m³)</option>
+          <option value="Villa Verde - Apoiado|Apoiado|100">Villa Verde - Apoiado</option>
         </optgroup>
         <optgroup label="CR Porto Seguro">
           <option value="Porto Seguro - Apoiado|Apoiado|0">Porto Seguro - Apoiado (? m³)</option>
         </optgroup>
         <optgroup label="CR Vila Toscana e Romana">
-          <option value="Vila Toscana e Romana - Elevado|Elevado|50">Vila Toscana e Romana - Elevado (50 m³)</option>
-          <option value="Vila Toscana e Romana - Apoiado|Apoiado|200">Vila Toscana e Romana - Apoiado (200 m³)</option>
+          <option value="Vila Toscana e Romana - Elevado|Elevado|50">Vila Toscana e Romana - Elevado</option>
+          <option value="Vila Toscana e Romana - Apoiado|Apoiado|200">Vila Toscana e Romana - Apoiado</option>
         </optgroup>
         <optgroup label="CR Entre Lagos">
-          <option value="Entre Lagos - Elevado|Elevado|40">Entre Lagos - Elevado (40 m³)</option>
-          <option value="Entre Lagos - Apoiado|Apoiado|300">Entre Lagos - Apoiado (300 m³)</option>
+          <option value="Entre Lagos - Elevado|Elevado|40">Entre Lagos - Elevado</option>
+          <option value="Entre Lagos - Apoiado|Apoiado|300">Entre Lagos - Apoiado</option>
         </optgroup>
         <optgroup label="CR Santo Antônio">
-          <option value="Santo Antônio - Apoiado|Apoiado|3300">Santo Antônio - Apoiado (3.300 m³)</option>
+          <option value="Santo Antônio - Apoiado|Apoiado|3300">Santo Antônio - Apoiado</option>
         </optgroup>
     </select>
   </div>
@@ -501,6 +538,7 @@ body{font-family:'IBM Plex Sans',sans-serif;background:var(--gray-bg);color:var(
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw8cUwatmPZcSPtCwWlOKzDJbQjIoP0x1FggIiDixdAkZJpqjXK29FgXk9cbKzbwt4CtQ/exec";
 const geoData = {lat:"", lng:""};
 let nivelPctVal = "";
+var etaToggles = {sf:"", filtro:"", crivo:"", energia:"", gerador:""};
 let pocoStatusAtual = "";
 let problemasAtivos = [];
 
@@ -580,6 +618,15 @@ function calcularTotalLucio() {
   document.getElementById("vol-total-medido").textContent = t>0?t.toLocaleString("pt-BR")+" m³":"— m³";
 }
 
+function setToggle(campo, valor) {
+  etaToggles[campo] = valor;
+  var opts = {sf:["aberto","fechado"], filtro:["sim","nao"], crivo:["sim","nao"], energia:["sim","nao"], gerador:["sim","nao"]};
+  opts[campo].forEach(function(v) {
+    var el = document.getElementById(campo+"-"+v);
+    if (el) { el.className = "toggle-opt" + (v===valor?" "+v:""); }
+  });
+}
+
 function setPocoStatus(s) {
   pocoStatusAtual = s;
   document.getElementById("btn-ligado").className = "poco-btn"+(s==="ligado"?" ligado":"");
@@ -624,6 +671,11 @@ function enviar(tipo) {
       etaPh:          document.getElementById("eta-ph").value,
       etaTurbidez:    document.getElementById("eta-turbidez").value,
       etaSituacao:    document.getElementById("eta-situacao").value,
+      etaRegSaoFrancisco: etaToggles.sf,
+      etaLavagemFiltro:   etaToggles.filtro,
+      etaLimpezaCrivo:    etaToggles.crivo,
+      etaParadaEnergia:   etaToggles.energia,
+      etaEntradaGerador:  etaToggles.gerador,
       observacoes:    document.getElementById("eta-obs").value.trim(),
     };
   } else if (tipo === "cr") {
@@ -706,6 +758,11 @@ function limpar(tipo) {
       const el=document.getElementById(id); if(el) el.value="";
     });
     document.getElementById("eta-data").value=hoje;
+    etaToggles = {sf:"", filtro:"", crivo:"", energia:"", gerador:""};
+    ["sf-aberto","sf-fechado","filtro-sim","filtro-nao","crivo-sim","crivo-nao",
+     "energia-sim","energia-nao","gerador-sim","gerador-nao"].forEach(function(id){
+      var el=document.getElementById(id); if(el) el.className="toggle-opt";
+    });
   } else if (tipo==="cr") {
     ["cr-localidade","tipo-reservatorio","cr-responsavel","cr-matricula","vol-atual",
      "qualidade-agua","pressao","cr-vazao","ultima-manutencao","prox-manutencao",
