@@ -445,44 +445,74 @@ body{font-family:'IBM Plex Sans',sans-serif;background:var(--gray-bg);color:var(
     <label>Poço Artesiano</label>
     <select id="poco-localidade">
       <option value="">Selecione o poço...</option>
-        <option value="PTP-01">PTP-01 — Paraíso I</option>
-        <option value="PTP-02">PTP-02 — Paraíso I</option>
-        <option value="PTP-03">PTP-03 — Paraíso I</option>
-        <option value="PTP-04">PTP-04 — Paraíso I</option>
-        <option value="PTP-06">PTP-06 — Paraíso II</option>
-        <option value="PTP-07">PTP-07 — Paraíso II</option>
-        <option value="PTP-10">PTP-10 — Sabiá</option>
-        <option value="PTP-11">PTP-11 — São Francisco</option>
-        <option value="PTP-13">PTP-13 — Boa Vista</option>
-        <option value="PTP-14">PTP-14 — Boa Vista</option>
-        <option value="PTP-15">PTP-15 — Boa Vista</option>
-        <option value="PTP-16">PTP-16 — Flor do Ipê</option>
-        <option value="PTP-18">PTP-18 — Flor do Ipê</option>
-        <option value="PTP-19">PTP-19 — Flor do Ipê</option>
-        <option value="PTP-20">PTP-20 — Flor do Ipê</option>
-        <option value="PTP-22">PTP-22 — Estrela do Sul</option>
-        <option value="PTP-23">PTP-23 — Estrela do Sul</option>
-        <option value="PTP-24">PTP-24 — CR Oliveira</option>
-        <option value="PTP-25">PTP-25 — ETA Oliveira</option>
-        <option value="PTP-27">PTP-27 — Liberdade</option>
-        <option value="PTP-30">PTP-30 — Liberdade</option>
-        <option value="PTP-32">PTP-32 — Liberdade</option>
-        <option value="PTP-34">PTP-34 — Liberdade (Haras)</option>
-        <option value="PTP-35">PTP-35 — Ingá</option>
-        <option value="PTP-36">PTP-36 — Nova Canaã (FGR)</option>
-        <option value="PTP-38">PTP-38 — Vale Verde</option>
-        <option value="PTP-39">PTP-39 — Vale Verde</option>
-        <option value="PTP-40">PTP-40 — Vale Verde</option>
-        <option value="PTP-41">PTP-41 — Morada do Morro</option>
-        <option value="PTP-42">PTP-42 — Morada do Morro</option>
-        <option value="PTP-43">PTP-43 — Jardim Canedo II</option>
-        <option value="PTP-45">PTP-45 — Morada do Bosque</option>
-        <option value="PTP-46">PTP-46 — Aurora das Mansões</option>
-        <option value="PTP-47">PTP-47 — Laranjeiras</option>
-        <option value="PTP-49">PTP-49 — Cefap</option>
-        <option value="PTP-50">PTP-50 — Poço Jardim Flamboyant</option>
-        <option value="PTP-51">PTP-51 — Poço Batata</option>
-        <option value="PTP-52">PTP-52 — Poço Maria Pires Perilo</option>
+      <optgroup label="PARAÍSO I">
+        <option value="PTP-04">PTP-04 - Paraíso I - Poço 4</option>
+        <option value="PTP-01">PTP-01 - Paraíso I - Poço 1</option>
+        <option value="PTP-02">PTP-02 - Paraíso I - Poço 2</option>
+        <option value="PTP-03">PTP-03 - Paraíso I - Poço 3</option>
+      </optgroup>
+      <optgroup label="PARAÍSO II">
+        <option value="PTP-06">PTP-06 - Paraíso II - Poço 1</option>
+        <option value="PTP-07">PTP-07 - Paraíso II - Poço 2</option>
+      </optgroup>
+      <optgroup label="JARDIM SABIÁ">
+        <option value="PTP-10">PTP-10 - Jardim Sabiá</option>
+      </optgroup>
+      <optgroup label="SÃO FRANCISCO">
+        <option value="PTP-11">PTP-11 - São Francisco</option>
+      </optgroup>
+      <optgroup label="BOA VISTA">
+        <option value="PTP-13">PTP-13 - Boa Vista - Quiosque</option>
+        <option value="PTP-14">PTP-14 - Boa Vista - Esq Boa Vista</option>
+        <option value="PTP-15">PTP-15 - Boa Vista - Brejo</option>
+        <option value="PTP-52">PTP-52 - Boa Vista - Represa</option>
+      </optgroup>
+      <optgroup label="FLOR DO IPÊ">
+        <option value="PTP-16">PTP-16 - Flor do Ipê - Esq Ipê</option>
+        <option value="PTP-18">PTP-18 - Flor do Ipê - Represa</option>
+        <option value="PTP-19">PTP-19 - Flor do Ipê - Estrada Matinha</option>
+        <option value="PTP-20">PTP-20 - Flor do Ipê - Gameleira</option>
+      </optgroup>
+      <optgroup label="ESTRELA DO SUL">
+        <option value="PTP-23">PTP-23 - Estrela do Sul 1</option>
+        <option value="PTP-22">PTP-22 - Estrela do Sul 2</option>
+      </optgroup>
+      <optgroup label="OLIVEIRA">
+        <option value="PTP-24">PTP-24 - CR Oliveira</option>
+        <option value="PTP-25">PTP-25 - ETA Oliveira</option>
+      </optgroup>
+      <optgroup label="LIBERDADE">
+        <option value="PTP-27">PTP-27 - Liberdade - Faculdade</option>
+        <option value="PTP-30">PTP-30 - Liberdade 2</option>
+        <option value="PTP-32">PTP-32 - Liberdade 4</option>
+        <option value="PTP-34">PTP-34 - Liberdade - Haras</option>
+      </optgroup>
+      <optgroup label="INGÁ">
+        <option value="PTP-35">PTP-35 - Ingá</option>
+      </optgroup>
+      <optgroup label="FGR">
+        <option value="PTP-36">PTP-36 - FGR 1</option>
+      </optgroup>
+      <optgroup label="VALE VERDE">
+        <option value="PTP-38">PTP-38 - Vale Verde 1</option>
+        <option value="PTP-39">PTP-39 - Vale Verde 2</option>
+        <option value="PTP-40">PTP-40 - Vale Verde 3</option>
+      </optgroup>
+      <optgroup label="MORADA DO MORRO">
+        <option value="PTP-41">PTP-41 - Morada do Morro - Pé de Manga</option>
+        <option value="PTP-42">PTP-42 - Morada do Morro - Escola Aracy</option>
+      </optgroup>
+      <optgroup label="JARDIM CANEDO">
+        <option value="PTP-43">PTP-43 - Jardim Canedo</option>
+      </optgroup>
+      <optgroup label="OUTROS">
+        <option value="PTP-45">PTP-45 - Morada do Bosque</option>
+        <option value="PTP-46">PTP-46 - Aurora das Mansões</option>
+        <option value="PTP-47">PTP-47 - Laranjeiras</option>
+        <option value="PTP-49">PTP-49 - Cefap</option>
+        <option value="PTP-50">PTP-50 - Jardim Flamboyant</option>
+        <option value="PTP-51">PTP-51 - Poço Batata</option>
+      </optgroup>
     </select>
   </div>
   <div class="row2">
