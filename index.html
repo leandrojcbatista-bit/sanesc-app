@@ -396,10 +396,14 @@ body{font-family:'IBM Plex Sans',sans-serif;background:var(--gray-bg);color:var(
       <option>Crítica — interdição necessária</option>
     </select>
   </div>
-  <div class="row2">
-    <div class="field-group"><label>Pressão (mca)</label><input type="number" id="pressao" placeholder="Ex: 15"/></div>
-    <div class="field-group"><label>Vazão (L/s)</label><input type="number" id="cr-vazao" placeholder="Ex: 4.5"/></div>
+  <div class="field-group">
+    <label>Booster</label>
+    <div class="toggle-pair-btns">
+      <div class="toggle-opt" id="booster-sim" onclick="setToggle('booster','sim')">✅ Ligado</div>
+      <div class="toggle-opt" id="booster-nao" onclick="setToggle('booster','nao')">❌ Desligado</div>
+    </div>
   </div>
+  <div class="field-group"><label>Vazão (L/s)</label><input type="number" id="cr-vazao" placeholder="Ex: 4.5"/></div>
   <div class="row2">
     <div class="field-group"><label>Última manutenção</label><input type="date" id="ultima-manutencao"/></div>
     <div class="field-group"><label>Próxima manutenção</label><input type="date" id="prox-manutencao"/></div>
@@ -589,11 +593,11 @@ body{font-family:'IBM Plex Sans',sans-serif;background:var(--gray-bg);color:var(
 </div>
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw8cUwatmPZcSPtCwWlOKzDJbQjIoP0x1FggIiDixdAkZJpqjXK29FgXk9cbKzbwt4CtQ/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzkPW83Vumq82eVvFVR2Opmx-eH-aaB4qpCSctFHR6Wflnya21kzRU6WZmKjBHiTTU14w/exec";
 const geoData = {lat:"", lng:""};
 let nivelPctVal = "";
 var etaToggles = {sf:"", filtro:"", crivo:"", energia:"", gerador:""};
-var crToggles = {mangueira:"", marcacao:""};
+var crToggles = {mangueira:"", marcacao:"", booster:""};
 let pocoStatusAtual = "";
 let problemasAtivos = [];
 
@@ -674,7 +678,7 @@ function calcularTotalLucio() {
 }
 
 function setToggle(campo, valor) {
-  var crCampos = ["mangueira","marcacao"];
+  var crCampos = ["mangueira","marcacao","booster"];
   if (crCampos.indexOf(campo) >= 0) {
     crToggles[campo] = valor;
   } else {
@@ -683,7 +687,7 @@ function setToggle(campo, valor) {
   var opts = {
     sf:["aberto","fechado"], filtro:["sim","nao"], crivo:["sim","nao"],
     energia:["sim","nao"], gerador:["sim","nao"],
-    mangueira:["sim","nao"], marcacao:["sim","nao"]
+    mangueira:["sim","nao"], marcacao:["sim","nao"], booster:["sim","nao"]
   };
   opts[campo].forEach(function(v) {
     var el = document.getElementById(campo+"-"+v);
@@ -765,6 +769,7 @@ function enviar(tipo) {
       volEngopa:       document.getElementById("vol-engopa").value,
       volDoisIrmaos:   document.getElementById("vol-dois-irmaos").value,
       observacoes:     document.getElementById("cr-obs").value.trim(),
+      crBooster:       crToggles.booster,
       crMangueira:     crToggles.mangueira,
       crMarcacao:      crToggles.marcacao,
       crVolMorto:      document.getElementById("cr-vol-morto").value,
@@ -833,12 +838,12 @@ function limpar(tipo) {
     });
   } else if (tipo==="cr") {
     ["cr-localidade","tipo-reservatorio","cr-responsavel","cr-matricula","vol-atual",
-     "qualidade-agua","pressao","cr-vazao","ultima-manutencao","prox-manutencao",
+     "qualidade-agua","cr-vazao","ultima-manutencao","prox-manutencao",
      "vol-medido-lucio","vol-engopa","vol-dois-irmaos","cr-obs","cr-vol-morto","cr-obs-tecnica"].forEach(id=>{
       const el=document.getElementById(id); if(el) el.value="";
     });
-    crToggles = {mangueira:"", marcacao:""};
-    ["mangueira-sim","mangueira-nao","marcacao-sim","marcacao-nao"].forEach(function(id){
+    crToggles = {mangueira:"", marcacao:"", booster:""};
+    ["booster-sim","booster-nao","mangueira-sim","mangueira-nao","marcacao-sim","marcacao-nao"].forEach(function(id){
       var el=document.getElementById(id); if(el) el.className="toggle-opt";
     });
     document.getElementById("cr-data").value=hoje;
