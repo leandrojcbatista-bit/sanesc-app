@@ -368,12 +368,18 @@ body{font-family:'IBM Plex Sans',sans-serif;background:var(--gray-bg);color:var(
   </div>
   <div class="card">
     <div class="card-title">Volume de armazenamento</div>
-    <div class="field-group" style="margin-bottom:12px;">
-      <label>Volume atual (m³)</label>
-      <input type="number" id="vol-atual" placeholder="Ex: 350" oninput="atualizarStats()"/>
+    <div class="row2" style="margin-bottom:12px;">
+      <div class="field-group" style="margin:0;">
+        <label>Altura da água (m)</label>
+        <input type="number" step="0.01" id="altura-agua" placeholder="Ex: 4.50" oninput="calcularPorAltura()"/>
+      </div>
+      <div class="field-group" style="margin:0;">
+        <label>Volume atual (m³)</label>
+        <input type="number" id="vol-atual" placeholder="Calculado auto" oninput="atualizarStats()"/>
+      </div>
     </div>
     <div class="nivel-bar"><div class="nivel-fill" id="nivel-fill" style="width:0%;background:#4CAF50;"></div></div>
-    <div class="nivel-label"><span id="nivel-desc">Informe o volume acima</span><span id="nivel-pct-label"></span></div>
+    <div class="nivel-label"><span id="nivel-desc">Selecione o CR e informe a altura</span><span id="nivel-pct-label"></span></div>
   </div>
 
   <div class="lucio-card" id="painel-lucio">
@@ -593,6 +599,75 @@ body{font-family:'IBM Plex Sans',sans-serif;background:var(--gray-bg);color:var(
 </div>
 
 <script>
+
+const TANQUE_DB = {
+  // CR Lúcio Rosa Apoiados (circ=42.30, altTotal=7.20, altUtil=6.60)
+  "Lúcio Rosa - Apoiado 1": {circ:42.30, altTotal:7.20, altUtil:6.60, volMorto:0, cap:1000},
+  "Lúcio Rosa - Apoiado 2": {circ:42.30, altTotal:7.20, altUtil:6.60, volMorto:0, cap:1000},
+  "Lúcio Rosa - Apoiado 3": {circ:42.30, altTotal:7.20, altUtil:6.60, volMorto:0, cap:1000},
+  "Lúcio Rosa - Apoiado 4": {circ:42.30, altTotal:7.20, altUtil:6.60, volMorto:0, cap:1000},
+  "Lúcio Rosa - Apoiado 5": {circ:42.30, altTotal:7.20, altUtil:6.60, volMorto:0, cap:1000},
+  // CR Capri
+  "Capri - Apoiado 1": {circ:45.00, altTotal:6.80, altUtil:6.50, volMorto:0, cap:1000},
+  "Capri - Apoiado 2": {circ:45.00, altTotal:6.80, altUtil:6.50, volMorto:0, cap:1000},
+  // CR Boa Vista (antigo 10 Milhões)
+  "Boa Vista - 10 Milhões": {circ:0, altTotal:12.50, altUtil:12.50, volMorto:0, cap:10000},
+  "Boa Vista - Caixa Boa Esperança": {circ:57.90, altTotal:0, altUtil:0, volMorto:0, cap:1500},
+  "Boa Vista - Caixa Top do Lago": {circ:64.90, altTotal:8.80, altUtil:8.60, volMorto:0, cap:3500},
+  // CR Boa Esperança
+  "Boa Esperança - Apoiado Tubular": {circ:10.14, altTotal:14.25, altUtil:14.25, volMorto:0, cap:100},
+  "Boa Esperança - Apoiado": {circ:26.60, altTotal:5.25, altUtil:5.25, volMorto:0, cap:200},
+  // CR São Francisco
+  "São Francisco - Apoiado 1": {circ:44.20, altTotal:7.20, altUtil:6.85, volMorto:0, cap:1100},
+  "São Francisco - Apoiado 2": {circ:44.20, altTotal:7.20, altUtil:6.85, volMorto:0, cap:1100},
+  "São Francisco - Apoiado 3": {circ:44.20, altTotal:7.20, altUtil:6.85, volMorto:0, cap:1100},
+  // CR Trajano
+  "Trajano - Apoiado 1": {circ:60.20, altTotal:5.50, altUtil:5.30, volMorto:0.20, cap:1500},
+  "Trajano - Apoiado 2": {circ:60.20, altTotal:5.50, altUtil:5.30, volMorto:0.20, cap:1500},
+  // CR GO-020 Solaris
+  "GO-020 Solaris - Apoiado": {circ:82.30, altTotal:5.90, altUtil:5.80, volMorto:0.10, cap:3000},
+  // CR Morumbi
+  "Morumbi - Apoiado Tubular": {circ:9.50, altTotal:18.00, altUtil:17.40, volMorto:0.60, cap:100},
+  "Morumbi - Apoiado 1": {circ:61.00, altTotal:7.50, altUtil:7.20, volMorto:0.30, cap:2000},
+  "Morumbi - Apoiado 2": {circ:61.00, altTotal:7.50, altUtil:7.20, volMorto:0.30, cap:2000},
+  // CR Oliveira
+  "Oliveira - Caixa Concreto": {circ:26.17, altTotal:4.00, altUtil:4.00, volMorto:0, cap:500},
+  "Oliveira - Caixa Metal Pequena": {circ:12.50, altTotal:4.20, altUtil:4.20, volMorto:0, cap:200},
+  "Oliveira - Caixa Metal Grande": {circ:40.70, altTotal:0, altUtil:3.50, volMorto:0.50, cap:1000},
+  // CR Matinha
+  "Matinha - Apoiada Pequena": {circ:40.36, altTotal:4.00, altUtil:3.70, volMorto:0.30, cap:500},
+  "Matinha - Apoiada Grande": {circ:56.70, altTotal:6.00, altUtil:5.40, volMorto:0.50, cap:1000},
+};
+
+function calcAreaCirc(circ) {
+  // Area = (circunferencia / (2*PI))^2 * PI = circ^2 / (4*PI)
+  return (circ * circ) / (4 * Math.PI);
+}
+
+function calcularVolumeTanque(nomeCR, alturaAgua) {
+  const t = TANQUE_DB[nomeCR];
+  if (!t || !alturaAgua) return null;
+  
+  // Altura útil = altura medida - volume morto
+  const altUtil = Math.max(0, alturaAgua - t.volMorto);
+  
+  let volume = 0;
+  if (t.circ > 0) {
+    // Tanque cilíndrico: V = Area * altura
+    const area = calcAreaCirc(t.circ);
+    volume = area * altUtil;
+  } else if (t.cap > 0 && t.altUtil > 0) {
+    // Sem circunferência: calcular proporcionalmente pela capacidade
+    volume = (altUtil / t.altUtil) * t.cap;
+  }
+  
+  return {
+    volume: Math.round(volume),
+    pct: t.altUtil > 0 ? Math.min(100, Math.round((altUtil / t.altUtil) * 100)) : 0,
+    cap: t.cap
+  };
+}
+
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzkPW83Vumq82eVvFVR2Opmx-eH-aaB4qpCSctFHR6Wflnya21kzRU6WZmKjBHiTTU14w/exec";
 const geoData = {lat:"", lng:""};
 let nivelPctVal = "";
@@ -634,6 +709,30 @@ function showTab(name) {
   document.querySelectorAll(".tab").forEach((t,i) => t.classList.toggle("active", tabNames[i]===name));
   document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
   document.getElementById("sec-"+name).classList.add("active");
+}
+
+function calcularPorAltura() {
+  const crVal = document.getElementById("cr-localidade").value;
+  const nomeCR = (crVal.split("|")[0]||"").trim();
+  const altura = parseFloat(document.getElementById("altura-agua").value);
+  
+  if (!altura || !nomeCR) return;
+  
+  const resultado = calcularVolumeTanque(nomeCR, altura);
+  if (resultado) {
+    document.getElementById("vol-atual").value = resultado.volume;
+    document.getElementById("stat-vol").textContent = resultado.volume.toLocaleString("pt-BR");
+    nivelPctVal = String(resultado.pct);
+    document.getElementById("stat-pct").textContent = resultado.pct + "%";
+    const fill = document.getElementById("nivel-fill");
+    fill.style.width = resultado.pct + "%";
+    fill.style.background = resultado.pct < 20 ? "#F44336" : resultado.pct < 50 ? "#FF9800" : "#4CAF50";
+    document.getElementById("nivel-desc").textContent = resultado.pct < 20 ? "⚠ Nível crítico" : resultado.pct < 50 ? "Nível baixo" : "Nível adequado";
+    document.getElementById("nivel-pct-label").textContent = resultado.pct + "%";
+  } else {
+    // Sem dados do tanque, calcular pela capacidade manualmente
+    atualizarStats();
+  }
 }
 
 function preencherCR() {
@@ -757,6 +856,7 @@ function enviar(tipo) {
       matricula:       document.getElementById("cr-matricula").value.trim(),
       dataVistoria:    document.getElementById("cr-data").value,
       latitude:        geoData.lat, longitude: geoData.lng,
+      alturaAgua:      document.getElementById("altura-agua").value,
       capacidadeTotal: crVal.split("|")[2]||"",
       volumeAtual:     document.getElementById("vol-atual").value,
       nivelPct:        nivelPctVal?nivelPctVal+"%":"",
@@ -839,7 +939,7 @@ function limpar(tipo) {
   } else if (tipo==="cr") {
     ["cr-localidade","tipo-reservatorio","cr-responsavel","cr-matricula","vol-atual",
      "qualidade-agua","cr-vazao","ultima-manutencao","prox-manutencao",
-     "vol-medido-lucio","vol-engopa","vol-dois-irmaos","cr-obs","cr-vol-morto","cr-obs-tecnica"].forEach(id=>{
+     "altura-agua","vol-medido-lucio","vol-engopa","vol-dois-irmaos","cr-obs","cr-vol-morto","cr-obs-tecnica"].forEach(id=>{
       const el=document.getElementById(id); if(el) el.value="";
     });
     crToggles = {mangueira:"", marcacao:"", booster:""};
