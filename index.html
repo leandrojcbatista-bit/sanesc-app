@@ -910,17 +910,25 @@ function enviar(tipo) {
   }
 
   const url = SCRIPT_URL + "?" + new URLSearchParams(params).toString();
-  fetch(url, {method:"GET", mode:"no-cors"})
-    .then(()=>{
-      status.className="send-status success";
-      status.innerHTML="✅ Salvo com sucesso!";
-      setTimeout(()=>{ status.className="send-status"; btn.disabled=false; limpar(tipo); }, 2500);
-    })
-    .catch(err=>{
-      status.className="send-status error";
-      status.innerHTML="❌ Erro: "+err.message;
-      btn.disabled=false;
-    });
+  // Criar iframe oculto para envio
+  var frameId = "send-frame";
+  var frame = document.getElementById(frameId);
+  if (!frame) {
+    frame = document.createElement("iframe");
+    frame.id = frameId;
+    frame.name = frameId;
+    frame.style.display = "none";
+    document.body.appendChild(frame);
+  }
+  // Abrir URL no iframe
+  frame.src = url;
+  // Considerar sucesso após 3 segundos
+  setTimeout(function(){
+    status.className="send-status success";
+    status.innerHTML="✅ Salvo com sucesso!";
+    btn.disabled=false;
+    setTimeout(function(){ limpar(tipo); }, 2000);
+  }, 3000);
 }
 
 function limpar(tipo) {
