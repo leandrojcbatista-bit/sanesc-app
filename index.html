@@ -832,12 +832,7 @@ function enviar(tipo) {
       dataVistoria:   document.getElementById("eta-data").value,
       latitude:       geoData.lat, longitude: geoData.lng,
       etaVazaoEntrada:document.getElementById("eta-vazao-entrada").value,
-      etaVazaoSaida:  document.getElementById("eta-vazao-saida").value,
-      etaCloro:       document.getElementById("eta-cloro").value,
-      etaFluor:       document.getElementById("eta-fluor").value,
-      etaPh:          document.getElementById("eta-ph").value,
       etaTurbidez:    document.getElementById("eta-turbidez").value,
-      etaSituacao:    document.getElementById("eta-situacao").value,
       etaRegSaoFrancisco: etaToggles.sf,
       etaLavagemFiltro:   etaToggles.filtro,
       etaLimpezaCrivo:    etaToggles.crivo,
@@ -931,8 +926,8 @@ function enviar(tipo) {
 function limpar(tipo) {
   const hoje = new Date().toISOString().split("T")[0];
   if (tipo==="eta") {
-    ["eta-localidade","eta-responsavel","eta-matricula","eta-vazao-entrada","eta-vazao-saida",
-     "eta-cloro","eta-fluor","eta-ph","eta-turbidez","eta-situacao","eta-obs"].forEach(id=>{
+    ["eta-localidade","eta-responsavel","eta-matricula","eta-vazao-entrada",
+     "eta-turbidez","eta-obs"].forEach(id=>{
       const el=document.getElementById(id); if(el) el.value="";
     });
     document.getElementById("eta-data").value=hoje;
